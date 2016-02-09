@@ -1,0 +1,45 @@
+﻿USE [Callback]
+GO
+
+
+
+/****** Object:  View [dbo].[v_PayFrequencyConversion]    Script Date: 11/13/2015 17:04:04 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER  VIEW [dbo].[v_EnrollWinEndDate_CrossClient]  
+AS  
+
+SELECT   ClientID='ASCOM', EmpID, EnrollWinCode, EndDate FROM ASCOM..EmpEnrollWin  
+UNION 
+ 
+SELECT   ClientID='C3', EmpID, EnrollWinCode, EndDate FROM C3..EmpEnrollWin  
+UNION  
+ 
+SELECT   ClientID='HBGDiocese', EmpID, EnrollWinCode, EndDate FROM HBGDiocese..EmpEnrollWin  
+UNION 
+ 
+SELECT   ClientID='Martinrea', EmpID, EnrollWinCode, EndDate FROM Martinrea..EmpEnrollWin  
+UNION 
+ 
+SELECT   ClientID='PKOH', EmpID, EnrollWinCode, EndDate FROM PKOH..EmpEnrollWin  
+UNION 
+
+SELECT   ClientID='USAble', EmpID, EnrollWinCode, EndDate FROM USAble..EmpEnrollWin  
+UNION 
+
+SELECT   ClientID='Walsh', EmpID, EnrollWinCode, EndDate FROM Walsh..EmpEnrollWin  
+UNION 
+
+SELECT   ClientID='Weathershield', EmpID, EnrollWinCode, EndDate FROM Weathershield..EmpEnrollWin  
+UNION 
+
+SELECT   ClientID='Wolverine', EmpID, EnrollWinCode, EndDate FROM Wolverine..EmpEnrollWin  
+
+GO
+
+

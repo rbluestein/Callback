@@ -1,0 +1,111 @@
+﻿USE [Callback]
+GO
+/****** Object:  UserDefinedFunction [dbo].[ufn_GetStatusCodeAdj]    Script Date: 11/13/2015 17:42:19 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*
+	Select  dbo.ufn_GetStatusCodeAdj (0, '266683', '11/11/2015')
+	SELECT DateDiff(d, '10/21/2010', '10/20/2010') 
+*/
+
+
+ALTER  FUNCTION [dbo].[ufn_GetStatusCodeAdj]
+(
+	@DetailInd bit,
+	@CallbackID int,
+	@CurDate datetime
+)
+
+RETURNS  varchar(15)
+
+AS
+
+BEGIN
+
+	DECLARE @Results varchar(15)
+	DECLARE @CallbackMasterStatusCode varchar(999)
+	DECLARE @CallbackAttemptLastActionCode varchar(999)
+	DECLARE @CallbackAttemptInd bit
+	DECLARE @Working varchar(15)
+	DECLARE @EnrollWinEndDate datetime
+	DECLARE @EnrollWinExpiredInd bit
+	DECLARE @EmpID varchar(20)
+	DECLARE @ClientID varchar(50)
+	
+	SET @CallbackAttemptInd = 0
+	SET @EnrollWinExpiredInd = 0
+
+	-- // Step #1: Get status code from CallbackAttempt, if present. Otherwise, get status code from CallbackMaster.
+	-- // Convert some of these codes to callback.
+
+		-- // Determine whether there are any attempts. If so, get the latest CallbackAttemptStatusCode
+		If (Select Count (*) FROM CallbackAttempt WHERE CallbackID = @CallbackID AND LogicalDelete = 0) > 0
+		Begin
+
+			-- // Get the StatusCode from CallbackAttempt
+			Select TOP 1  @CallbackAttemptLastActionCode = CallbackAttemptStatusCode FROM CallbackAttempt WHERE CallbackID = @CallbackID AND LogicalDelete  = 0 ORDER BY AddDate Desc
+			Set @Working = case
+				when @CallbackAttemptLastActionCode IN ('ACWN', 'CBS',  'LMOM', 'LMWP', 'NA', 'CTCB') then 'CB'
+				else @CallbackAttemptLastActionCode  -- CLOS, WNV, CL1A
+				end			
+		End
+		Else
+		Begin
+		
+			-- // Get the StatusCode from CallbackMaster
+			SELECT @Working = StatusCode FROM CallbackMaster WHERE CallbackID = @CallbackID  -- CB, TCA, TCWN		
+		End
+
+	-- // Step #2: Override callback status with window expired status where appropriate.
+		If @Working = 'CB'
+		Begin		
+			--SELECT @EnrollWinEndDate = EnrollWinEndDate FROM CallbackMaster WHERE CallbackID = @CallbackID
+			SELECT @EmpID = EmpID, @ClientID = ClientID FROM CallbackMaster WHERE CallbackID = @CallbackID						
+			SELECT @EnrollWinEndDate = MAX(EndDate) FROM dbo.v_EnrollWinEndDate_CrossClient
+			WHERE EmpID = @EmpID AND ClientID = @ClientID AND EnrollWinCode = 'OE'			
+			
+			If @EnrollWinEndDate IS NOT NULL
+			Begin
+				If (SELECT DateDiff(d, @CurDate, @EnrollWinEndDate))  < 0
+				Begin
+					SET @Working = 'WE'
+				End
+			End
+		End	
+
+	-- // Step #3: Prepare results for DetailInd = 0 and DetailInd = 1
+		If @DetailInd = 0
+		Begin
+			Set @Results = @Working
+			If @Results IN ('TCA', 'TCWN')
+			Begin
+				Set @Results = 'TC'
+			End
+			Else If @Results = 'CL1A'
+			Begin
+				Set @Results = 'CLOS'
+			End	
+		End
+		else
+		Begin
+			Set @Results = case
+			when @Working = 'WE' then 'Win exp'
+			when @Working = 'CB' then 'Callback'
+			when @Working = 'INIT' then 'Initialize'
+			when @Working = 'TCA' then 'Unable to auth'
+			when @Working = 'TCWN' then 'Wrong num'
+			when @Working = 'CLOS' then 'Ticket closed'
+			when @Working = 'CL1A' then'Ticket closed 1 attempt'
+			when @Working = 'WNV' then 'Wrong num ver'
+			end
+		End
+
+	-- // Step #4: Return results
+		Return @Results
+END
+
+

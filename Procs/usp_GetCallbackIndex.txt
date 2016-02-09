@@ -1,0 +1,130 @@
+﻿USE [Callback]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_GetCallbackIndex]    Script Date: 02/08/2016 20:21:19 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*
+
+exec usp_GetCallbackIndex @Recordcount=0, @ClientID='PKOH', @State='OH', @StatusCodeAdjDetail='CB', @OrderBy = 'EmpLastName DESC'
+exec [usp_GetCallbackIndex] @Recordcount = 1 --, @ClientID='pkoh' --, @State='OH'
+	
+*/
+
+
+ALTER PROCEDURE [dbo].[usp_GetCallbackIndex]
+(
+	@RecordCount bit,
+ 	@EmpLastName varchar(50) = NULL,
+	@ClientID varchar(25) = NULL,
+	@State varchar(2) = NULL,
+	@CallPurposeCode varchar(6) = NULL,
+	@PriorityTagInd bit = NULL,
+	@PreferSpanishInd bit = NULL,
+	@StatusCodeAdjDetail varchar(2) = NULL,
+	@OrderBy varchar(200) = NULL
+	
+)
+AS
+
+BEGIN
+
+DECLARE @MemTbl varchar(600)
+DECLARE @OutTbl varchar(1400)
+DECLARE @FieldTable TABLE(RecID int)
+DECLARE @Sql nvarchar(2000)
+
+SET @MemTbl = 'USE Callback '
+SET @MemTbl = @MemTbl + 'DECLARE @FieldTable TABLE(RecID int) '
+SET @MemTbl = @MemTbl + 'INSERT INTO @FieldTable '
+SET @MemTbl = @MemTbl + 'SELECT cm.CallbackID '
+SET @MemTbl = @MemTbl + 'FROM CallbackMaster cm '
+SET @MemTbl = @MemTbl + 'WHERE cm.LogicalDelete = 0 '
+SET @MemTbl = @MemTbl + 'AND ISNULL(cm.IsPurged, 0) = 0 '
+
+IF @EmpLastName IS NOT NULL
+BEGIN
+	SET @MemTbl = @MemTbl + 'AND cm.EmpLastName LIKE ''' + @EmpLastName +'% '
+END
+IF @ClientID IS NOT NULL
+BEGIN
+	SET @MemTbl = @MemTbl + 'AND cm.ClientID =  ''' + @ClientID + ''' '
+END
+IF @State IS NOT NULL
+BEGIN
+	SET @MemTbl = @MemTbl + 'AND cm.State =  ''' + @State + ''' '
+END
+IF @CallPurposeCode IS NOT NULL
+BEGIN
+	SET @MemTbl = @MemTbl + 'AND cm.CallPurposeCode =  ''' + @CallPurposeCode + ''' '
+END
+IF @PriorityTagInd IS NOT NULL
+BEGIN
+	SET @MemTbl = @MemTbl + 'AND cm.PriorityTagInd =  ' + CONVERT(varchar, @PriorityTagInd) + ' ' 
+END
+IF @PreferSpanishInd IS NOT NULL
+BEGIN
+	SET @MemTbl = @MemTbl + 'AND cm.PreferSpanishInd =  ' + CONVERT(varchar, @PreferSpanishInd) + ' '
+END
+IF @StatusCodeAdjDetail IS NOT NULL
+BEGIN  -- code
+	SET @MemTbl = @MemTbl + 'AND dbo.ufn_GetStatusCodeAdj(0, cm.CallbackID, getDate()) = ''' + @StatusCodeAdjDetail + ''' '
+END
+
+IF @RecordCount = 0
+BEGIN
+	SET @OutTbl = ' SELECT '
+	SET @OutTbl = @OutTbl + 'cm.CallbackID, cm.CreationDate, '
+	SET @OutTbl = @OutTbl + 'TicketNumber = STUFF(cm.TicketNumber,3,0,''-''), '
+	SET @OutTbl = @OutTbl + 'EmpName = cm.EmpLastName + '', '' + cm.EmpFirstName + '' '' + cm.EmpMI, '
+	SET @OutTbl = @OutTbl + 'cm.EmpLastName, cm.EmpFirstName, cm.ClientID, cm.State, '
+	SET @OutTbl = @OutTbl + 'CallPurposeCode = cm.CallPurposeCode, CallPurposeDescription = ccp.CallPurposeDescription, '
+
+	SET @OutTbl = @OutTbl + 'cm.PriorityTagInd, cp.BestTime, cm.PreferSpanishInd, '
+	SET @OutTbl = @OutTbl + 'NumAttempts = (SELECT Count (*) FROM CallbackAttempt ca WHERE ca.CallbackID = cm.CallbackID AND ca.LogicalDelete = 0), '
+	SET @OutTbl = @OutTbl + 'LastActivityDate =  dbo.ufn_GetLastActivityDate(cm.CallbackID), cm.NumEmployeeCalls, '
+
+	SET @OutTbl = @OutTbl + 'DaysRemaining = case '
+	SET @OutTbl = @OutTbl + 'when dbo.ufn_GetEnrollWinEndDate(cm.EmpID, cm.ClientID) IS NULL then ''No win'' '
+	SET @OutTbl = @OutTbl + 'else Cast((SELECT DateDiff(d, getDate(), dbo.ufn_GetEnrollWinEndDate(cm.EmpID, cm.ClientID))) as varchar(10)) '
+	SET @OutTbl = @OutTbl + 'end, '
+
+	SET @OutTbl = @OutTbl + 'NewAttemptInd = case '
+	SET @OutTbl = @OutTbl + 'when dbo.ufn_GetStatusCodeAdj(0, cm.CallbackID, getDate()) <> ''TC'' then ''1'' ' 
+	SET @OutTbl = @OutTbl + 'else ''0'' '
+	SET @OutTbl = @OutTbl + 'end, '
+	SET @OutTbl = @OutTbl + 'StatusCodeAdjDetail = dbo.ufn_GetStatusCodeAdj(1, cm.CallbackID, getDate()) '  -- desccription
+
+END
+ELSE
+BEGIN
+	SET @OutTbl = 'SELECT Count(*) '
+END
+
+SET @OutTbl = @OutTbl + 'FROM @FieldTable ft '
+SET @OutTbl = @OutTbl + 'INNER JOIN CallbackMaster cm ON cm.CallbackID = ft.RecID '
+SET @OutTbl = @OutTbl + 'INNER JOIN Codes_CallPurpose ccp ON cm.CallPurposeCode = ccp.CallPurposeCode '
+SET @OutTbl = @OutTbl + 'LEFT JOIN CallbackPhone cp ON cm.CallbackID = cp.CallbackID AND cp.Seq = 1 '
+SET @OutTbl = @OutTbl + 'ORDER BY ' + @OrderBy
+
+SET @Sql = @MemTbl + @OutTbl
+EXECUTE sp_executesql @Sql
+END
+
+--USE PROJECTREPORTS
+--DECLARE @EnrollerID varchar(20)
+--SET @EnrollerID = 'jwatroba'
+--DECLARE @WhereClause varchar(100)
+--SET @WhereClause = ' where enrollerid=''' + @EnrollerID + ''''
+--DECLARE @SelectStatement NVARCHAR(2000)
+--DECLARE @FullStatement NVARCHAR(4000)
+--SET @SelectStatement = 'SELECT TOP 5 * FROM EmpTransmittal '
+--SET @FullStatement = @SelectStatement + ISNULL(@WhereClause,'')
+--PRINT @FullStatement
+--EXECUTE sp_executesql @FullStatement
+
+
+

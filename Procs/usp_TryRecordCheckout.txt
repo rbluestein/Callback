@@ -1,0 +1,58 @@
+﻿USE [Callback]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_TryRecordCheckout]    Script Date: 02/08/2016 21:07:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*
+ticket number 42930
+callbackid 100277
+select * from callbackmaster where callbackid = 100277
+select top  10  CallbackID, TicketNumber, CheckOutUserID, CheckoutTime from callbackmaster
+select top  10 * from callbackmaster
+exec usp_TryRecordCheckout @CallbackID = 100277, @LoggedInUserID = 'jwatroba'
+*/
+
+
+ALTER  PROCEDURE [dbo].[usp_TryRecordCheckout]
+(
+ 	@CallbackID int,
+ 	@LoggedInUserID varchar(20)
+)
+AS
+
+DECLARE @CheckoutSuccessInd bit = 0
+DECLARE @CheckedOutUser varchar(60) = NULL
+
+SELECT @CheckedOutUser = u.FirstName + ' ' + u.LastName
+FROM CallbackMaster cm
+INNER JOIN UserManagement..Users u ON 
+cm.CallbackID = @CallbackID
+AND DateDiff(ss, DateAdd(hour, (-5), GetUtcDate()), cm.CheckoutTime) > 25
+AND u.UserID = cm.CheckoutUserID 
+AND u.UserID <> @LoggedInUserID
+
+IF @CheckedOutUser IS NULL
+BEGIN
+	UPDATE CallbackMaster SET
+	CheckoutUserID = @LoggedInUserID,
+	CheckoutTime = DateAdd(hour, (-5), GetUtcDate())
+	WHERE CallbackID = @CallbackID
+	SET @CheckoutSuccessInd = 1	
+END
+
+SELECT CheckoutSuccess=@CheckoutSuccessInd, CurrentCheckoutUser=@CheckedOutUser
+
+
+
+
+
+
+
+
+
+
+

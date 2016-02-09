@@ -1,0 +1,49 @@
+[1/14/2016 3:26:02 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Error #118a: CallWorklist GetQueryInfo Info Type: RecordCountDatabase 'Wolverine' cannot be opened. It is in the middle of a restore. ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/14/2016 7:35:15 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/14/2016 7:38:01 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/14/2016 7:40:10 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: Data. Error #118a: CallWorklist GetQueryInfo Info Type: DataCannot find either column "dbo" or the user-defined function or aggregate "dbo.ufn_GetEnrollWinEndDate", or the name is ambiguous. ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/14/2016 7:47:29 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: Data. Error #118a: CallWorklist GetQueryInfo Info Type: DataCannot find either column "dbo" or the user-defined function or aggregate "dbo.ufn_GetEnrollWinEndDate", or the name is ambiguous. ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/27/2016 7:14:47 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/27/2016 7:16:16 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[1/27/2016 8:29:02 PM rbluestein] Error #750: CallbackAttempt Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248c: Common GetRequestAction. Failed hdAction. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 3:38:35 PM rbluestein] Error #750: CallbackAttempt Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248c: Common GetRequestAction. Failed hdAction. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 6:10:17 PM jcherry] Error #750: CallbackAttempt Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248c: Common GetRequestAction. Failed hdAction. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 6:16:42 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 7:03:16 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 7:04:00 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 7:20:17 PM jcherry] Error #750: CallbackAttempt Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248c: Common GetRequestAction. Failed hdAction. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 7:58:04 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 8:06:14 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 8:06:38 PM rbluestein] Error #650: CallMaintain Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248b Common GetRequestAction.Failed querystring. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 8:07:01 PM rbluestein] Error #650: CallMaintain Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248b Common GetRequestAction.Failed querystring. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 8:08:17 PM rbluestein] Error #650: CallMaintain Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248b Common GetRequestAction.Failed querystring. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/4/2016 8:09:58 PM rbluestein] Error #650: CallMaintain Page_Load. Error #CM2248e: Common GetRequestAction Error #CM2248b Common GetRequestAction.Failed querystring. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/5/2016 4:23:24 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/5/2016 4:26:38 PM ] Error #114c: Index LoadEnviro. Error #114b: LoadEnviro. Unable to authenticate user in UserManagement database ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/5/2016 6:11:44 PM rbluestein] Enviro AuthenticateRequest. Conversion from string "b6ba3d5e-685c-495d-b9c4-c3df2695" to type 'Double' is not valid. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/5/2016 6:12:09 PM rbluestein] Enviro AuthenticateRequest. Conversion from string "cc24a058-9fac-4dce-bbc3-5ee53e12" to type 'Double' is not valid. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/5/2016 6:13:45 PM rbluestein] Enviro AuthenticateRequest. Conversion from string "885cb6bb-1a46-40e5-a3e3-9910fd51" to type 'Double' is not valid. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/5/2016 8:48:56 PM jcherry] Error #CM2248c: Common GetRequestAction.Failed hdAction. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 5:19:40 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Conversion from string "" to type 'Boolean' is not valid. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 5:29:24 PM rbluestein] ExecuteReader: CommandText property has not been initialized ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 5:38:23 PM rbluestein] ExecuteReader: CommandText property has not been initialized ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 5:45:12 PM rbluestein] ExecuteReader: CommandText property has not been initialized ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 5:55:58 PM rbluestein] ExecuteReader: CommandText property has not been initialized ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:10:45 PM rbluestein] Error #112: Index DisplayPage. Argument 'Index' is not a valid value. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:12:15 PM rbluestein] Error #112: Index DisplayPage. Argument 'Index' is not a valid value. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:18:24 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Conversion from string "PKOH, " to type 'Integer' is not valid. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:24:23 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Conversion from string "PKOH, " to type 'Integer' is not valid. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:25:43 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:36:22 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:38:24 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:40:04 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:41:17 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 6:51:37 PM rbluestein] Error #DG427: DG HandleChildTableSelectColumn. Public member 'ToText' on type 'Integer' not found. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 7:08:53 PM rbluestein] Error #DG427: DG HandleChildTableSelectColumn. Public member 'ToText' on type 'Integer' not found. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 7:16:47 PM rbluestein] Error #DG424: DG HandleDataboundColumn. Column 'TicketNumber' does not belong to table . ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 7:17:58 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 7:21:05 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 7:59:47 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 8:19:41 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 9:04:15 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **
+[2/8/2016 9:06:16 PM rbluestein] Error #118b: Index GetQueryInfo Info Type: RecordCount. Object reference not set to an instance of an object. ** ERROR FORCING APPLICATION SHUTDOWN **

@@ -1,0 +1,164 @@
+﻿function OnLoadEvents() {
+    var EmpID
+    //DoBrowser()
+    if (document.getElementById("hdJumpToRecInd").value == "1") {
+        EmpID = document.getElementById("hdJumpToRecID").value
+        window.location.hash = '# + EmpID + '
+    }
+}
+
+function OnUnloadEvents() {
+    if (CallbackMaintainPage) {
+        CallbackMaintainPage.close()
+    }
+    if (CallbackAttemptPage) {
+        CallbackAttemptPage.close()
+    }
+}
+
+// ___User, site, buildnum table	
+try {
+    document.write("<table style='background:#eeeedd;PADDING-LEFT: 12px;FONT: 8pt Arial, Helvetica, sans-serif; POSITION: absolute;TOP: 14px;left: 14px' cellSpacing='0' cellPadding='0' width='125' border='0'><tr><td width='30'>User:</td><td>" + form1.hdLoggedInUserID.value + "</td></tr><tr><td>Site:</td><td WRAP=HARD>" + form1.hdDBHost.value + "</td></tr><tr><td>Build:</td><td>" + form1.hdBuildNum.value + "</td></tr></table>")
+    // document.write("<table style='background:#eeeedd;PADDING-LEFT: 12px;FONT: 8pt Arial, Helvetica, sans-serif; POSITION: absolute;TOP: 14px;left: 100px' cellSpacing='0' cellPadding='0' width='125' border='0'><colgroup><col width='50'/><col width='35'/></colgroup><tr><td colspan='2'>App not cooperating?</td><td>UserID:</td></tr><tr><td>Site:</td><td WRAP=HARD>" + form1.hdDBHost.value + "</td></tr><tr><td>Build:</td><td>" + form1.hdBuildNum.value + "</td></tr></table>")
+} catch (everything) {   }
+
+// ___ AltLogin
+try {
+var statement 
+statement = "<table style=\"background:#eeeedd;PADDING-LEFT: 12px;FONT: 8pt Arial, Helvetica, sans-serif; POSITION: absolute;TOP: 14px;left: 170px\" "
+statement = statement + "cellSpacing=\"0\" cellPadding=\"0\" width=\"250\" border=\"0\">"
+statement = statement + "<colgroup><col width=\"40\"/><col width=\"190\"/></colgroup>"
+statement = statement + "<tr><td align=\"center\" colspan=\"2\">App not cooperating?</td></tr>"
+statement = statement + "<tr><td>UserID:</td>"
+//statement = statement + "<td><input type=\"text\" id=\"AltLogin\" name=\"Altlogin\" onkeypress=\"EnterKeySubmit(event)\" />&nbsp;&nbsp;"
+statement = statement + "<td><input type=\"text\" id=\"AltLogin\" name=\"Altlogin\" />&nbsp;&nbsp;"
+
+statement = statement + "<input type=\"button\" " 
+// statement = statement + "onclick=\"document.getElementById('hdAction').value='AltLogin'; document.getElementsByTagName('form')[0].submit()\"/>"
+statement = statement + "onclick=\"fnAltLogin()\"/>"
+statement = statement + "</td></tr></table>"
+document.write(statement)
+    // *** END ALTLOGIN *** //
+} catch (everything) { }
+
+// ___ DateRangePicker, var CallbackMaintainPage, var CallbackAttemptPage, Feature
+//try {
+//var DateRangePickerYMD = new DateRangePickerYMD(document.forms['form1'],  document.getElementById("hdDateRange"), "Enter Date Range", 0);  
+//var CallbackMaintainPage
+//var CallbackAttemptPage
+//var CallbackFeatures = "location=no, toolbar=no, menubar=no; status=no, scrollbars=no, resizable=no, left=10, top=10, screenX= (screen.width - 416) / 2, screenY=10, height=432, width=562"
+//var CallbackAttemptFeatures =  "location=no, toolbar=no, menubar=no; status=no, scrollbars=no, resizable=no, left=10, top=10, screenX= (screen.width - 416) / 2, screenY=10, height=294, width=562"
+//} catch (everything) { }
+
+// *** Called by CallbackMaintain and CallbackAttempt
+function ReturnFromMaintain() {
+    if (IsNumeric(document.getElementById("hdCheckedOutCallbackID").value)) {
+        CallbackMaintainPage = null
+        CheckInRecord()
+    }
+    ApplyFilter()
+}
+
+function ReturnFromAttempt() {
+    if (IsNumeric(document.getElementById("hdCheckedOutCallbackID").value)) {
+        CallbackAttemptPage = null
+        CheckInRecord()
+    }
+    ApplyFilter()
+}
+			
+// ___ Create new CallbackMaster record
+function NewRecord() {
+    if (CallbackMaintainPage) {
+        var OKToProceed = confirm("Another Callback page is open in this browser. By clicking OK, you will cause this page to close this page and lose all data in it. Do you wish to proceed with this action?")
+        if (OKToProceed == true) {
+            CallbackMaintainPage = window.open ("CallbackMaintain.aspx?CallType=New&CallbackID=''", "Maintain", CallbackFeatures)
+        } 			        
+    } else {
+        CallbackMaintainPage = window.open ("CallbackMaintain.aspx?CallType=New&CallbackID=''", "Maintain", CallbackFeatures)
+    }			        
+}
+    			 
+// ___ Edit CallbackMaster record           
+function ExistingRequirement(CallbackID) {
+    CheckoutRecord (CallbackID, 0, "requirement", "maint")
+}              
+
+// ___ New attempt
+//function NewAttempt(CallbackID) {
+//    CheckoutRecord (CallbackID, 0, "newattempt", "maint")
+//}	
+                
+// ___ New CallbackAttempt record                
+function NewAttempt(CallbackID) {
+    if (CallbackAttemptPage) {
+        var OKToProceed = confirm("Another callback attempt page is open in this browser. By clicking OK, you will cause this page to close this page and lose all data in it. Do you wish to proceed with this action?")
+        if (OKToProceed == true) {
+            CheckoutRecord (CallbackID, 0, "newattempt", "maint")
+        } 			        
+    } else {
+        CheckoutRecord (CallbackID, 0, "newattempt", "maint")
+    }			        
+}
+               			
+// ___ Existing attempt
+//function ExistingCallbackAttempt(CallbackAttemptID, CallbackID) {
+//    CheckoutRecord (CallbackID, 0, "newattempt", "maint")				
+//}
+	
+// ___ View, edit CallbackAttempt record
+function ExistingCallbackAttempt(CallbackAttemptID, CallbackID) {
+    if (CallbackAttemptPage) {
+        var OKToProceed = confirm("Another callback attempt page is open in this browser. By clicking OK, you will cause this page to close this page and lose all data in it. Do you wish to proceed with this action?")
+        if (OKToProceed == true) {
+            CheckoutRecord (CallbackID, CallbackAttemptID, "existingattempt", "maint")		
+        } 			        
+    } else {
+        CheckoutRecord (CallbackID, CallbackAttemptID, "existingattempt", "maint")		
+    }			        
+}			    			    
+			    
+// ___ Delete CallbackMaintain record
+function DeleteCallback(CallbackID) {
+    CheckoutRecord (CallbackID, 0, "requirement", "delete")
+}
+    		    
+// ___ Delete CallbackAttempt record
+function DeleteCallbackAttempt(CallbackAttemptID, CallbackID) {
+    CheckoutRecord (CallbackID, CallbackAttemptID, "existingattempt", "delete")
+}
+
+    			
+    			
+// ___ Make ajax call
+
+    			
+// ___ END CHECKOUT RECORD						
+		
+//function OnLoadEvents() {
+//    var EmpID
+//// <asp:Literal ID="litJumpToAnchor" runat="server" EnableViewState="False"></asp:Literal>
+//    //litJumpToAnchor.Text = "window.location.hash='#" & cIndexSess.DGSess.JumpToRecID & "'"
+//    //'litJumpToAnchor.Text = "window.location.hash='#" & cIndexSess.DGSess.JumpToRecID & "'"
+//    //'litJumpToAnchor.Text = "   window.location.hash='#999999'     "
+//    if (document.getElementById("hdJumpToRecInd").value == "1") {
+//        EmpID=document.getElementById("hdJumpToRecID").value 
+//        window.location.hash='# + EmpID + '
+//    }
+//}	
+
+//function OnLoadEvents() {
+//    var EmpID
+//    if (document.getElementById("hdJumpToRecInd").value == "1") {
+//        EmpID=document.getElementById("hdJumpToRecID").value 
+//        window.location.hash='# + EmpID + '
+//    } 
+//    else if (document.getElementById("hdAltLogin") != null) {
+//        alert(document.getElementById("hdAltLogin"))
+//    }
+//}
+
+			
+												
+			
+																				

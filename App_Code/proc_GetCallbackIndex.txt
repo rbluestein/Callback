@@ -1,0 +1,82 @@
+﻿USE [Callback]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_GetCallbackIndex]    Script Date: 01/29/2016 14:57:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*
+
+exec [usp_GetCallbackIndex] @ClientID='pkoh'	
+	
+*/
+
+
+ALTER PROCEDURE [dbo].[usp_GetCallbackIndex]
+(
+ 	@EmpLastName varchar(50),
+	@ClientID varchar(25),
+	@State varchar(2),
+	@CallPurposeCode varchar(6),
+	@PriorityTagInd bit,
+	@PreferSpanishInd bit
+)
+AS
+
+BEGIN
+
+--DECLARE @StartTime datetime
+--DECLARE @EndTime datetime
+--SET @StartTime =  GETDATE()
+DECLARE @FieldTable TABLE(RecID int)
+
+INSERT INTO @FieldTable
+SELECT cm.CallbackID
+FROM CallbackMaster cm
+WHERE cm.ClientID = @ClientID
+AND cm.LogicalDelete = 0 
+AND ISNULL(cm.IsPurged, 0) = 0
+
+SELECT 
+cm.CallbackID,
+cm.CreationDate,
+TicketNumer = STUFF(cm.TicketNumber,3,0,'-'),
+EmpName = EmpLastName + ', ' + EmpFirstName + ' ' + EmpMI , 
+EmpLastName, 
+EmpFirstName, 
+ClientID = cm.ClientID, 
+State = cm.State,
+CallPurposeCode = cm.CallPurposeCode, 
+CallPurposeDescription = ccp.CallPurposeDescription,
+PriorityTagInd, 
+cp.BestTime, 
+cm.PreferSpanishInd,
+NumAttempts = (SELECT Count (*) FROM CallbackAttempt ca WHERE ca.CallbackID = cm.CallbackID AND ca.LogicalDelete = 0),
+LastActivityDate =  dbo.ufn_GetLastActivityDate(cm.CallbackID), cm.NumEmployeeCalls,
+
+DaysRemaining = case 
+when dbo.ufn_GetEnrollWinEndDate(cm.EmpID, cm.ClientID) IS NULL then 'No win' 
+else Cast((SELECT DateDiff(d, getDate(), dbo.ufn_GetEnrollWinEndDate(cm.EmpID, cm.ClientID))) as varchar(10)) 
+end, 
+
+NewAttemptInd = case 
+when dbo.ufn_GetStatusCodeAdj(0, cm.CallbackID, getDate()) <> 'TC' then '1' 
+else '0' 
+end, 
+
+StatusCodeAdjDetail = dbo.ufn_GetStatusCodeAdj(1, cm.CallbackID, getDate()) 
+
+FROM @FieldTable ft
+INNER JOIN CallbackMaster cm ON cm.CallbackID = ft.RecID
+INNER JOIN Codes_CallPurpose ccp ON cm.CallPurposeCode = ccp.CallPurposeCode
+--INNER JOIN (SELECT CallbackID=CallbackID, dog = COUNT(*) FROM CallbackAttempt group by callbackid) ca ON ft.RecID = ca.CallbackID
+LEFT JOIN CallbackPhone cp ON cm.CallbackID = cp.CallbackID AND cp.Seq = 1 
+--set @EndTime = GETDATE()
+
+--select @StartTime, @endtime
+
+END
+
+

@@ -1,0 +1,126 @@
+﻿.rtop,.rbottom 
+{
+	display:block;
+	background-color: transparent;
+}
+
+.rtop *,.rbottom *
+{
+	display:block;height: 1px;
+	overflow: hidden
+}
+
+.r1
+{
+	margin: 0 5px
+}
+	
+.r2
+{
+	margin: 0 3px
+}
+
+.r3
+{
+	margin: 0 2px
+	
+}
+
+.r4
+{
+	margin: 0 1px;
+	height: 2px
+}
+
+.rs1
+{
+	margin: 0 2px
+}
+
+.rs2
+{
+	margin: 0 1px
+}
+
+
+
+
+
+
+.DCMenu
+{
+	z-index:100;
+	font-family: Verdana, Arial, Sans-Serif;
+	font-size: 12px;
+}
+
+.DCMenu ul
+{
+	display:inline;
+	list-style-type:none;
+	margin-left: 0px;
+}
+
+
+.DCMenu ul li
+{
+	display:inline;
+	float: left;
+	margin-right:2px;
+	text-align: center;
+}
+
+
+
+/* --------------------------------------------------------------------------------------------- */
+
+.unselected .rtop .r1, .unselected .rtop .r2, .unselected .rtop .r3, .unselected .rtop .r4
+{
+	background-color: rgb(116, 162, 227);
+}
+
+.DCMenu .unselected a
+{
+	float:left;
+	padding: 2px 0 5px;
+	text-decoration:none;
+	background-color: rgb(116, 162, 227); 
+	color: #FFF;
+	outline: none;
+}  
+
+ .DCMenu .unselected a:hover
+ {
+ 	color: #000
+ } 
+
+
+/* --------------------------------------------------------------------------------------------- */
+
+.selected .rtop .r1, .selected .rtop .r2, .selected .rtop .r3, .selected .rtop .r4
+{
+	/* background-color: rgb(45, 81, 115); */
+	background-color: rgb(31, 84, 127);
+}
+
+.DCMenu .selected a
+{
+	float:left;
+	padding: 2px 0 5px;
+	text-decoration:none;
+	/* background-color: rgb(45, 81, 115); */
+	background-color: rgb(31, 84, 127);	
+	color: #FFF;
+	outline: none;
+}
+
+
+.CallbackMaintainPanel
+{
+	margin-top:12px;
+	margin-left:14px; 
+	border-style:solid; 
+	border-width: 1px; 
+	border-color:#1E547E;
+	background: #eeeedd;	
+}

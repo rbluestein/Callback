@@ -1,0 +1,69 @@
+﻿USE [ProjectReports]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_CallHistoryWorklistSubTableQueryAdj]    Script Date: 01/29/2016 18:59:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- //  *** TAKEN DIRECTLY FROM CALL HISTORY PAGE
+
+ALTER  PROCEDURE [dbo].[usp_CallHistoryWorklistSubTableQueryAdj]
+
+AS
+SELECT 
+[Call Date] = et.CallStartTime,
+[Emp Name] =et.LastName + ', ' + et.FirstName, 
+Placeholder = '',
+
+Enrolled = case
+when ept.ProductID IS NULL then 0
+else 1
+end,
+
+Product = ISNULL(ept.ProductID, ''),
+
+
+Tier = case when (ept.ProductID = 'ALLSTATEUL') AND
+(alt.AltProductDataID IS NULL) AND
+(LEFT(apd.FieldName, 22) = 'Future Purchase Option') then 'EZ' when (ept.ProductID = 'TMARKCOMBO')  AND
+(alt.AltProductDataID IS NULL) AND
+(apd.FieldName='EZValue' AND
+apd.FieldData = 'true') then 'EZ1_5' when (ept.ProductID = 'TMARKUL')  AND
+(alt.AltProductDataID IS NULL) AND
+(CharIndex('EZV1', apd.FieldData) > 0) then 'EZ1_5' when (ept.ProductID = 'TMARKUL')  AND
+(alt.AltProductDataID IS NULL) AND
+(CharIndex('EZV2', apd.FieldData) > 0) then 'EZ1_10' when (ept.ProductID = 'TMARKUL')  AND
+(alt.AltProductDataID IS NULL) AND
+(CharIndex('EZV3', apd.FieldData) > 0) then 'EZ2_5' when (ept.ProductID = 'TRANSUL')   AND
+(alt.AltProductDataID IS NULL) AND
+(apd.FieldName = 'EZValue') then 'EZ' else alt.Tier end, 
+
+WeeklyPremium = case when ccp.DisplayPremiumInd = 1 then Cast(ept.WeeklyPremium as money) else null end,
+AnnualPremium = case when ccp.DisplayPremiumInd = 1 then Cast(ept.AnnualPremium as money) else null end, 
+PlanBenefitAmt = case when ccp.DisplayPlanBenefitAmtInd = 1 then Cast(ept.PlanBenefitAmt as money) else null end
+
+ 
+FROM EmpTransmittal et 
+LEFT JOIN EmpProductTransmittal ept on ept.ActivityID = et.ActivityID 
+LEFT JOIN IAMS..AppsAndPolsSummary aps ON aps.AppID = ept.AppID AND aps.ActivityID = et.ActivityID
+LEFT JOIN Config_ClientProduct ccp ON ept.ProductID = ccp.ClientProductID 
+
+ 
+LEFT JOIN IAMS..AppsAndPolsData apd ON aps.AppID = apd.AppID AND ((aps.ProductID = 'ALLSTATEUL' AND
+LEFT(apd.FieldName, 22) = 'Future Purchase Option') OR (aps.ProductID IN ('TRANSUL', 'TMARKCOMBO') AND
+apd.FieldName='EZValue' AND apd.FieldData = 'true') OR (aps.ProductID = 'TMARKUL'  AND CharIndex('EZV', apd.FieldData) > 0) ) 
+
+LEFT JOIN Alt_ProductData alt ON alt.AltProductDataID = ept.AltProductDataID 
+
+
+WHERE 
+
+et.ClientID = 'Diopitt'  
+and dbo.ufn_IsDateBetween(et.CallStartTime, '10/27/2010', '12/13/2010') = 1
+
+
+and isnull(et.LogicalDelete, 0) <> 1 and isnull(ept.LogicalDelete, 0) <> 1 and et.SupervisorApprovalDate IS NOT NULL
+
+order by et.Lastname + et.Firstname
+
